@@ -1,0 +1,4 @@
+- data: "sample.yml"
+  template: "sample_template.j2"
+  output: "SampleOutput.txt"
+        

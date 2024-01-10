@@ -1,0 +1,19 @@
+- data: "app.yml"
+  template: "app_db_context.j2"
+  output: "ApplicationDbContext.cs"
+
+- data: "sample.yml"
+  template: "csp_model.j2"
+  output: "Sample.cs"
+
+- data: "sample.yml"
+  template: "asp_controller.j2"
+  output: "SampleController.cs"
+
+- data: "sample.yml"
+  template: "index_cshtml.j2"
+  output: "Index.cshtml"
+
+- data: "sample.yml"
+  template: "csp_model.j2"
+  output: "SampleProgram.cs"

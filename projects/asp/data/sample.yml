@@ -1,0 +1,88 @@
+app_name: "SampleWebApp"
+controller_namespace: "Controllers"
+entity_name: "Sample"
+entity_name_lower: "sample"
+entity_name_plural: "Samples"
+entity_label: "Sample"
+entity_label_plural: "Samples"
+create_attr_label: "Title"
+edit_attr_label: "Title"
+delete_attr_label: "Title"
+order_by: "desc"
+allow_delete: True
+allow_edit: True
+list_page_size: 7
+search_page_size: 7
+referenced_entities:
+  - name: SampleProgram
+attrs:
+  - name: "SampleProgramId"
+    alt_name: "Program"
+    alt_plural: "Programs"
+    label: "Program"
+    attr_type: "int"
+    isrequired: True
+    isforeign: True
+    referenced_from: "SampleProgram"
+    referenced_label: "Name"
+    search_by: False
+    show_in_create: True
+    show_in_edit: True
+    show_in_list: True
+    show_in_details: True
+    is_detail_title: True
+
+  - name: "Title"
+    label: "Title"
+    attr_type: "string"
+    isrequired: True
+    default: "Name"
+    max: 60
+    min: 2
+    isforeign: False
+    search_by: True
+    show_in_ui: True
+    show_in_create: True
+    show_in_edit: True
+    show_in_list: True
+    show_in_details: True
+    is_detail_title: False
+
+  - name: "Content"
+    label: "Content"
+    attr_type: "string"
+    isrequired: True
+    default: "NA"
+    max: 512
+    min: 2
+    isforeign: False
+    search_by: True
+    big_in_ui: True
+    show_in_ui: True
+    show_in_create: True
+    show_in_edit: True
+    show_in_list: True
+    show_in_details: True
+    is_detail_title: False
+
+  - name: "Imagery"
+    label: "Imagery"
+    attr_type: "string"
+    isrequired: True
+    default: "NA"
+    max: 512
+    min: 2
+    isforeign: False
+    is_file: True
+    search_by: True
+    big_in_ui: True
+    show_in_ui: True
+    show_in_create: True
+    show_in_edit: True
+    show_in_list: True
+    show_in_details: True
+    is_detail_title: False
+
+
+
+  

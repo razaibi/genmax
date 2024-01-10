@@ -1,0 +1,13 @@
+app_name: "SampleWebApp"
+app_domain: "SAMPLE.COM"
+app_domain_lower: "sample.com"
+entities:
+  - name: ProgramStatus
+  - name: Organization
+  - name: Member
+  - name: MemberGroup
+  - name: MemberGroupMapping
+  - name: MemberGroupPermission
+  - name: Note
+  - name: MemberPermission
+  - name: Sample

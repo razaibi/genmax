@@ -1,0 +1,237 @@
+{% set vars = ['o', 'p', 'q', 'r', 's', 't'] %}
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using {{data.app_name}}.Data;
+using {{data.app_name}}.Models;
+
+namespace {{data.app_name}}.Controllers
+{
+    public class {{data.entity_name}}Controller : Controller
+    {
+        private readonly ApplicationDbContext _context;
+
+        public {{data.entity_name}}Controller(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        // GET: {{data.entity_name}}
+        public async Task<IActionResult> Index()
+        {
+            return View();
+        }
+
+
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id==null)
+            {
+                return NotFound();
+            }
+            var {{lcase(data.entity_name)}} = await _context.{{data.entity_name}}
+                {%-for item in data.referenced_entities%}
+                .Include({{vars[loop.index]}} => {{vars[loop.index]}}.{{item.name}})
+                {%endfor-%}
+                FirstOrDefaultAsync(m => m.{{data.entity_name}}Id == id);
+            if ({{lcase(data.entity_name)}} == null)
+            {
+                return NotFound();
+            }
+            return View({{lcase(data.entity_name)}});
+        }{% set ns = namespace()-%}{% set ns.has_file = False-%}{% set ns.uploader = ""-%}
+{%-for item in data.attrs%}
+    {%if item.is_file == True-%}
+        {%set ns.has_file = True-%}{%set ns.uploader = ", IFormFile fileUploader"-%}
+    {%endif-%}
+{%endfor%}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("{{joinify('name',data.attrs)}},IsActive")] {{data.entity_name}} {{lcase(data.entity_name)}}{{ns.uploader}})
+        {
+            {{lcase(data.entity_name)}}.CreatedOn = DateTime.Now;
+            {{lcase(data.entity_name)}}.LastModifiedOn = DateTime.Now;
+            if (ModelState.IsValid)
+            {
+                _context.Add({{lcase(data.entity_name)}});
+                await _context.SaveChangesSync();
+            }
+
+            {%if ns.has_file == True%}
+            if (fileUploader != null)
+            {
+                string uploadsFolder = Path.Combine("Storage", "Sample");
+                string filePath = Path.Combine(uploadsFolder, fileUploader.FileName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    fileUploader.CopyTo(fileStream);
+                }
+            }
+            {%endif%}
+            return {{lcase(data.entity_name)}} == null ? NotFound() : Ok(Json( new
+                {
+                    {{lcase(data.entity_name)}}Id= {{lcase(data.entity_name)}}.{{data.entity_name}}Id,
+                    {%-for item in data.attrs%}
+                    {{lcase(item.name)}} = {{lcase(data.entity_name)}}.{{item.name}},
+                    {%-endfor%}
+                }
+            ));
+        }
+
+{%if data.allow_edit== True%}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("{{data.entity_name}}Id, {{joinify('name', data.attrs)}}, IsActive")] {{data.entity_name}} {{lcase(data.entity_name)}}{{ns.upload}})
+        {
+
+            if (id != {{lcase(data.entity_name)}}.{{data.entity_name}}Id)
+            {
+                return NotFound();
+            }
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    {{lcase(data.entity_name)}}.LastModifiedOn = DateTime.Now;
+                    _context.Update({{lcase(data.entity_name)}});
+                    await _context.SaveChangesAsync();
+                    {%if ns.has_file == True%}
+                    if (fileUploader != null)
+                    {
+                        string uploadsFolder = Path.Combine("Storage", "Sample");
+                        string filePath = Path.Combine(uploadsFolder, fileUploader.FileName);
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            fileUploader.CopyTo(fileStream);
+                        }
+                    }
+                    {%endif%}
+                    var result = _context.{{data.entity_name}}
+                        {%-for item in data.referenced_entities%}
+                        .Include({{vars[loop.index]}} => {{vars[loop.index]}}.{{item.name}})
+                        {%endfor-%}
+                        .FirstOrDefaultAsync(m => m.{{data.entity_name}}Id == id);
+                    return result == null ? NotFound() : Ok(result);
+
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!{{data.entity_name}}Exists({{lcase(data.entity_name)}}.{{data.entity_name}}Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }       
+                }
+            }else{
+                return BadRequest();
+            }
+        }
+{%endif%}
+
+{%if data.allow_delete == True%}
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var {{lcase(data.entity_name)}} = await _context.{{data.entity_name}}.FindAsync(id);
+            _context.{{data.entity_name}}.Remove({{lcase(data.entity_name)}});
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+{%endif%}
+        [HttpGet("/{{data.entity_name.lower()}}/all")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<{{data.entity_name}}>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult GetAll{{pluralize(data.entity_name)}}(int skip=0, int take={{data.list_page_size}})
+        {
+            var {{pluralize(lcase(data.entity_name))}} = _context.{{data.entity_name}}
+                {%-for item in data.referenced_entities%}
+                .Include({{vars[loop.index]}} => {{vars[loop.index]}}.{{item.name}})
+                {%endfor-%}
+                {% if data.order_by == "desc" %}.OrderByDescending(i=> i.LastModifiedOn){% endif-%}
+                .Skip(skip)
+                .Take(take);
+
+            return {{pluralize(lcase(data.entity_name))}} == null ? NotFound() : Ok({{pluralize(lcase(data.entity_name))}}.ToListAsync());
+        }
+
+        [HttpGet("/{{data.entity_name.lower()}}/search")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<{{data.entity_name}}>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult SearchAll{{pluralize(data.entity_name)}}(string term)
+        {
+            var {{pluralize(lcase(data.entity_name))}} = _context.{{data.entity_name}}.AsQueryable();
+            if (!string.IsNullOrEmpty(term))
+            {
+                {{pluralize(lcase(data.entity_name))}} = _context.{{data.entity_name}}
+                {%-for item in data.referenced_entities%}
+                .Include({{vars[loop.index]}} => {{vars[loop.index]}}.{{item.name}})
+                {%endfor-%}
+                .Where(
+                    s =>
+                {%-for item in data.attrs-%}
+                    {%if item.search_by == True%} Ef.Functions.Like(s.{{item.name}}, $"%{{'{term}'}}%"){%if not loop.last %}||{% endif %}{% endif %}
+                {%endfor-%}
+                ).Take({{data.search_page_size}});
+            }
+            return {{pluralize(lcase(data.entity_name))}} == null ? NotFound() : Ok({{pluralize(lcase(data.entity_name))}}.ToListAsync());
+        }
+
+        [HttpGet("/{{data.entity_name.lower()}}/count")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(int))]
+        public IActionResult GetCount()
+        {
+            var count = _context.{{data.entity_name}}
+                {%-for item in data.referenced_entities%}
+                .Include({{vars[loop.index]}} => {{vars[loop.index]}}.{{item.name}})
+                {%endfor-%}
+                .Count();
+            return Ok(count);
+        }
+
+        {%-for item in data.attrs%}
+        {%if item.isforeign == True%}
+        [HttpGet("/{{data.entity_name.lower()}}/{{pluralize(item.alt_name.lower())}}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<{{item.alt_name}}>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult Get{{pluralize(item.alt_name)}}()
+        {
+            var {{pluralize(lcase(item.alt_name))}} = _context.{{item.referenced_from}};
+            return {{pluralize(lcase(item.alt_name))}} == null ? NotFound() : Ok({{pluralize(lcase(item.alt_name))}}.ToListAsync());
+        }
+        {%-endif-%}
+        {%-endfor%}
+
+        [HttpGet("/{{data.entity_name.lower()}}/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof({{data.entity_name}}))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetById(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var {{lcase(data.entity_name)}} = await _context.{{data.entity_name}}
+                {%-for item in data.referenced_entities%}
+                .Include({{vars[loop.index]}} => {{vars[loop.index]}}.{{item.name}})
+                {%endfor-%}
+                .FirstOrDefaultAsync(m => m.{{data.entity_name}}Id == id);
+            if ({{lcase(data.entity_name)}} == null)
+            {
+                return NotFound();
+            }
+
+            return {{lcase(data.entity_name)}} == null ? NotFound() : Ok({{lcase(data.entity_name)}});
+        }
+
+
+        private bool {{data.entity_name}}Exists(int id)
+        {
+            return _context.{{data.entity_name}}.Any(e => e.{{data.entity_name}}Id == id);
+        }
+    }
+}

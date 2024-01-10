@@ -1,0 +1,3 @@
+- data: "app.yml"
+  template: "sample_context.j2"
+  output: "SampleContext.cs"

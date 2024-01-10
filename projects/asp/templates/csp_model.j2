@@ -1,0 +1,49 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
+
+namespace {{ data.app_name }}.Models;
+
+public class {{data.entity_name}}
+{
+
+    [Key]
+    public int {{ data.entity_name}}Id {get;set;}
+    {%for item in data.attrs%}
+    {%-if item.attr_type == "datetime"-%}
+        {%-set a_type="Datetime"-%}
+    {%-else-%}
+        {%-set a_type=item.attr_type-%}
+    {%-endif-%}
+    {% if item.isrequired == True%}
+    [Required]
+    {% endif-%}
+    {%if "label" in item%}[Display(Name = "{{ item.label}}")]{%endif%}
+    {%if item.attr_type == "string"%}[StringLength({{item.max}}, MinimumLength = {{item.min}})]{%endif-%}
+    {%if item.attr_type == "int"%}{%if "min" in item%}[MinValue({{item.min}})]{%endif%}{%endif-%}
+    {%if item.attr_type == "int"%}{%if "max" in item%}[MaxValue({{item.max}})]{%endif%}{%endif-%}
+    {%if item.attr_type == "datetime"%}[DataType(DataType.Data)]{%endif%}
+    {%if item.isforeign == True%}[ForeignKey("{{item.name}}")]{%endif%}
+    public {{ a_type}} {{item.name}} { get;set; }
+    {%if "default" in item-%}
+    {%if item.attr_type == "string"-%} = "{{ item.default }}";{%-else-%} = {{ item.default }};{%-endif-%}{%-endif%}
+    {%-if "referenced_from" in item%}
+    {%if "label" in item%}
+    [Display(Name = "{{ item.label }}")]
+    {%endif%}
+    public virtual {{item.referenced_from}}? {{item.referenced_from}} {get;set;}
+    {%endif%}
+    {%-endfor%}
+
+    {%for item in data.referenced_by_entities-%}
+    public virtual List<{{item.name}}> {{pluralize(item.name)}} {get;set} = new List<{{item.name}}>();
+    {%-endfor%}
+    public int CreatedBy {get;set;}
+    [DataType(DataType.Date)]
+    public DateTime? CreatedOn {get;set;} = DateTime.Now;
+    public int ModifiedBy {get;set;}
+    [DataType(DataType.Date)]
+    public DateTime? LastModifiedOn { get;set; } = DateTime.Now;
+    [Display(Name="Is Active")]
+    public Boolean IsActive {get; set;} = true;
+}
