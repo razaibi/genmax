@@ -1,10 +1,15 @@
 import typer
 from gmx.logic.project import ProjectLogic
 
-project_app = typer.Typer()
+project_app = typer.Typer(help="Project related operations.")
 
-@project_app.command(name="add")
-def add_project(name:str):
+@project_app.command(name="add", help="Creates a new project with the given name.")
+def add_project(
+        name: str = typer.Argument(
+            ..., 
+            help="The name of the project to create."
+        )
+    ):
     """
     Add a project.
 
