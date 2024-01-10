@@ -1,13 +1,12 @@
 import os
 import sys
 import yaml
-import extensions as ex
+import gmx.extensions as ex
 from jinja2 import Environment, FileSystemLoader
 
 class WorkFlowLogic:
     def __init__(self) -> None:
         pass
-
 
     @staticmethod
     def process_items(project_name, items):

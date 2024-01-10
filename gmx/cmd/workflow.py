@@ -1,6 +1,6 @@
 from typing import List
 import typer
-from logic.workflow import WorkFlowLogic
+from gmx.logic.workflow import WorkFlowLogic
 
 workflow_app = typer.Typer()
 

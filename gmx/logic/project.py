@@ -1,7 +1,7 @@
 import os
 import sys
 import yaml
-import extensions as ex
+import gmx.extensions as ex
 from jinja2 import Environment, FileSystemLoader
 
 class ProjectLogic:

@@ -1,6 +1,6 @@
 import typer
-from cmd.workflow import workflow_app
-from cmd.project import project_app
+from gmx.cmd.workflow import workflow_app
+from gmx.cmd.project import project_app
 
 app = typer.Typer()
 app.add_typer(workflow_app, name="wf")

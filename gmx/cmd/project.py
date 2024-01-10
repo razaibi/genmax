@@ -1,5 +1,5 @@
 import typer
-from logic.project import ProjectLogic
+from gmx.logic.project import ProjectLogic
 
 project_app = typer.Typer()
 

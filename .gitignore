@@ -154,3 +154,4 @@ cython_debug/
 
 __projects/*
 STARTERS.md
+build_local.sh
