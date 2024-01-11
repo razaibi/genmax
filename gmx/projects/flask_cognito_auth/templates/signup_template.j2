@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sign Up</title>
+</head>
+<body>
+    <form method="POST">
+        {{'{{'}}  form.hidden_tag() {{'}}'}}
+        Username: {{'{{'}} form.username {{'}}'}}<br>
+        Email: {{'{{'}} form.email {{'}}'}}<br>
+        Password: {{'{{'}} form.password {{'}}'}}<br>
+        {{'{{'}} form.submit {{'}}'}}
+    </form>
+</body>
+</html>

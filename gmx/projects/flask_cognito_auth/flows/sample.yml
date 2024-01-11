@@ -1,0 +1,16 @@
+- data: "sample.yml"
+  template: "app_template.j2"
+  output: "app.py"
+
+- data: "sample.yml"
+  template: "login_template.j2"
+  output: "login.html"
+
+- data: "sample.yml"
+  template: "signup_template.j2"
+  output: "signup.html"
+
+- data: "sample.yml"
+  template: "reset_password_template.j2"
+  output: "reset_password.html"
+        

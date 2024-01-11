@@ -1,0 +1,4 @@
+app_name: "SampleWebApp"
+entities:
+  - name: FlaskApp
+        
