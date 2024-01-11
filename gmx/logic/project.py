@@ -19,7 +19,7 @@ entities:
     def _add_sample_flow(self, flow_path: str):
         sample_flow_content = """- data: "sample.yml"
   template: "sample_template.j2"
-  output: "SampleOutput.txt"
+  output: "sample>SampleOutput.txt"
         """
         with open(os.path.join(flow_path, "sample.yml"), "w") as f:
             f.write(sample_flow_content)

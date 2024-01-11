@@ -43,16 +43,26 @@ class WorkFlowLogic:
             # Render the template with the source data
             output = template.render(data=data)
 
-            # Save the output tot the specified output file
-            output_path = os.path.join(project_name, 'output', item['output'])
             try:
-                with open(
-                    output_path,
-                    'w'
-                    ) as f:
-                    f.write(output)
-            except:
-                print(f'Error writing output {output_path}')
+                # Check if the folder path exists, if not, create it
+                current_working_directory = os.getcwd()
+                raw_path = item['output'].replace(">",os.sep)
+                folder_path = os.path.dirname(raw_path)
+                folder_path = os.path.join(
+                    current_working_directory,
+                    folder_path
+                )
+                if not os.path.exists(folder_path):
+                    os.makedirs(folder_path)
+
+                # Check if the file exists, if not, create it
+                if not os.path.isfile(raw_path):
+                    with open(raw_path, 'w') as file:
+                        file.write(output)
+            except Exception as e:
+                print(e)
+                filepath = item['output']
+                print(f'Error writing output {filepath}')
 
     @staticmethod
     def run_workflows(project_name: str, flows: list):
