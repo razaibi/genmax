@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='genmax',
-    version='0.0.1',
+    version='0.0.2',
     author='Raza Balbale',
     description='A simple code generation tool.',
     url='https://https://github.com/razaibi/genmax/',
