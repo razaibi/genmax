@@ -25,5 +25,5 @@ The following methods are supported in the template:
 #### Run It
 
 ```bash
-python main.py asp asp_web
+gmx wf sample sample
 ```
