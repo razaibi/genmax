@@ -1,8 +1,8 @@
 import os
-import sys
-import yaml
 import gmx.extensions as ex
+from gmx.logic.common import CommonLogic
 from jinja2 import Environment, FileSystemLoader
+
 
 class ProjectLogic:
     def __init__(self) -> None:
@@ -38,7 +38,9 @@ public class {{data.entity_name}}
             f.write(sample_template_content)
 
     def add_project(self, project_name: str):
-        project_path = os.path.join("projects", project_name)
+        project_path = os.path.join("gmx", project_name)
+        project_path = CommonLogic.get_gmx_folder_path(project_path)
+   
         data_path = os.path.join(
             project_path,
             "data"
@@ -56,7 +58,7 @@ public class {{data.entity_name}}
             "templates"
         )
         os.makedirs(project_path, exist_ok=True)
-        os.makedirs(data_path, exist_ok=True)
+        os.makedirs(data_path, exist_ok=True) 
         os.makedirs(flows_path, exist_ok=True)
         os.makedirs(output_path, exist_ok=True)
         os.makedirs(templates_path, exist_ok=True)

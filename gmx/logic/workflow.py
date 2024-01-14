@@ -2,6 +2,7 @@ import os
 import sys
 import yaml
 import gmx.extensions as ex
+from gmx.logic.common import CommonLogic
 from jinja2 import Environment, FileSystemLoader
 
 class WorkFlowLogic:
@@ -9,9 +10,8 @@ class WorkFlowLogic:
         pass
 
     @staticmethod
-    def process_items(project_name, items):
-        # Set up the Jinja2 environment
-        env = Environment(loader=FileSystemLoader(os.path.join(project_name, 'templates')))
+    def process_items(project_path, items):
+        env = Environment(loader=FileSystemLoader(os.path.join(project_path, 'templates')))
         env.globals['lcase'] = ex.lcase
         env.globals['joinify'] = ex.joinify
         env.globals['pluralize'] = ex.pluralize
@@ -29,7 +29,7 @@ class WorkFlowLogic:
         for item in items:
             # Load the source data
             try:
-                data_path = os.path.join(project_name, 'data', item['data'])
+                data_path = os.path.join(project_path, 'data', item['data'])
                 with open(
                     data_path
                     ) as f:
@@ -66,9 +66,10 @@ class WorkFlowLogic:
 
     @staticmethod
     def run_workflows(project_name: str, flows: list):
+        project_path = os.path.join("gmx", project_name)
+        project_path = CommonLogic.get_gmx_folder_path(project_path)
         for flow in flows:
-            project_name = os.path.join('projects', project_name)
-            flow_path = os.path.join(project_name, 'flows', f'{flow}.yml')
+            flow_path = os.path.join(project_path, 'flows', f'{flow}.yml')
             print(f'Processing Flow : {flow_path}.')
             # Load the items from the YAMl file
             try:
@@ -76,7 +77,7 @@ class WorkFlowLogic:
                         flow_path
                     ) as f:
                     items = yaml.safe_load(f)
-                    WorkFlowLogic.process_items(project_name, items)
+                    WorkFlowLogic.process_items(project_path, items)
                 print(f'Flow Status: Done.\n')
             except Exception as e: 
                 print(f'Flow processing failed.')
