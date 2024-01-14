@@ -6,7 +6,7 @@ long_description = (this_directory / "README.md").read_text()
 
 setup(
     name='genmax',
-    version='0.0.4',
+    version='0.0.6',
     author='Raza Balbale',
     description='A simple code generation tool.',
     long_description=long_description,
