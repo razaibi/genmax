@@ -52,8 +52,24 @@ The following methods are supported in the template:
 |Generate secret in 16 bit - hexadecimal| secret()|
 |Generate secret in 64 bit - hexadecimal| secret_complex()|
 
-#### Run It
+#### Quick Start
+
+Create a sample project.
 
 ```bash
-gmx wf sample sample
+gmx init
+```
+
+Run the sample workflow in the project.
+
+```bash
+gmx wf sample
+```
+
+#### Other commands
+
+If you have multiple projects, you can set another one as active.
+
+```bash
+gmx proj set other-project
 ```

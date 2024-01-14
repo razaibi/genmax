@@ -19,6 +19,9 @@ def add_project(
     """
     typer.echo(f"Adding project {name}.")
     pl = ProjectLogic()
+    if pl.check_if_exists(name):
+        typer.echo(f"Project '{name}' already exists.")
+        return
     pl.add_project(name)
     typer.echo("Status : Done.")
     pl = PreferenceLogic()

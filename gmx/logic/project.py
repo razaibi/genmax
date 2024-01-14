@@ -66,3 +66,12 @@ public class {{data.entity_name}}
         self._add_sample_flow(flows_path)
         self._add_sample_template(templates_path)
 
+    def check_if_exists(self, project_name: str):
+        exists = False
+        project_path = os.path.join("gmx", project_name)
+        project_path = CommonLogic.get_gmx_folder_path(project_path)
+        if os.path.exists(project_path):
+            exists = True
+        else:
+            exists = False
+        return exists

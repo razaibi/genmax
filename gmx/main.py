@@ -1,10 +1,12 @@
 import typer
 from gmx.cmd.workflow import workflow_app
 from gmx.cmd.project import project_app
+from gmx.cmd.initialize import init
 
 app = typer.Typer()
 app.add_typer(workflow_app, name="wf")
 app.add_typer(project_app, name="proj")
+app.command()(init)
 
 @app.callback(invoke_without_command=True)
 def main(ctx: typer.Context):
