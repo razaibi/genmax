@@ -1,4 +1,4 @@
-#### What is Genmax?!
+### Genmax
 
 Genmax is a simple code generation tool.
 
@@ -28,9 +28,9 @@ Once the data is passed to a template, Genmax generates an output file with the 
 
 | Command | Description |
 |:---|:---|
-|gmx add proj <project-name>| Create a new project.|
-|gmx set proj <project-name>| Set the current project.|
-|gmx wf run <workflow-name>| Run workflow for a given project.|
+|gmx add proj \<project-name> | Create a new project.|
+|gmx set proj \<project-name> | Set the current project.|
+|gmx wf run \<workflow-name> | Run workflow for a given project.|
 
 #### Extensions supported in templates
 
