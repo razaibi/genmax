@@ -155,3 +155,5 @@ cython_debug/
 __projects/*
 STARTERS.md
 build_local.sh
+prod_upload.sh
+test_upload.sh
