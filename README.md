@@ -63,7 +63,7 @@ gmx init
 Run the sample workflow in the project.
 
 ```bash
-gmx wf sample
+gmx wf run sample
 ```
 
 #### Other commands
