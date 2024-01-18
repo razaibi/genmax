@@ -51,6 +51,7 @@ The following methods are supported in the template:
 |Generate UUID| uuid()|
 |Generate secret in 16 bit - hexadecimal| secret()|
 |Generate secret in 64 bit - hexadecimal| secret_complex()|
+|Read config from .env file.| env(file_name, config_name)|
 
 #### Quick Start
 
@@ -73,3 +74,27 @@ If you have multiple projects, you can set another one as active.
 ```bash
 gmx proj set other-project
 ```
+
+Delete a project using the below command.
+
+```bash
+gmx proj del project-name
+```
+
+#### Workflow Item Types
+
+Add these to your workflow YAML file as needed.
+
+| Item | Description |
+|:---|:---|
+| Generate ||
+| data | Data to pass to the template. |
+| action | The name of the generate action. |
+| template | Template to use for code generation (j2 supported). |
+| output | Name and extension of the output file. |
+|||
+| Write to File ||
+| action | The name of the write_to_file action. |
+| template | Template to write to file. |
+| output | Name and extension of the output file. |
+|||
