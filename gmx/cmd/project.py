@@ -44,9 +44,13 @@ def set_current_project(
     Args:
         name (str): The name of the project to create.
     """
+    pl = ProjectLogic()
+    if not pl.check_if_exists(name):
+        typer.echo(f'Project "{name}" does not exist.')
+        return
     pl = PreferenceLogic()
     pl.set_preference('current_project', name)
-    typer.echo(f"Current project set to {name}.")
+    typer.echo(f'Current project set to "{name}".')
     typer.echo("Status : Done.")
 
 @project_app.command(name="get", help="Get current project.")
@@ -76,7 +80,14 @@ def del_project(
     Args:
         name (str): The name of the project to delete.
     """
-    typer.echo(f"Deleting project {name}...")
+    pl = PreferenceLogic()
+    current_proj = pl.get_preference('current_project')
+    if current_proj == name:
+        typer.echo(f"Cannot delete a project marked as current.")
+        typer.echo(f"Set another project as current using:")
+        typer.echo(f"gmx proj set <project_name>")
+        return
+    typer.echo(f'Deleting project "{name}"...')
     pl = ProjectLogic()
     if pl.check_if_exists(name):
         pl.delete(name)
