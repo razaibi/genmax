@@ -63,4 +63,25 @@ def get_current_project():
     else:
         print(f'Current project is {current_proj}.')
 
+@project_app.command(name="del", help="Deletes and existing project.")
+def del_project(
+        name: str = typer.Argument(
+            ..., 
+            help="The name of the project to delete."
+        )
+    ):
+    """
+    Delete a project.
+
+    Args:
+        name (str): The name of the project to delete.
+    """
+    typer.echo(f"Deleting project {name}...")
+    pl = ProjectLogic()
+    if pl.check_if_exists(name):
+        pl.delete(name)
+        typer.echo("Status : Done.")
+    else:
+        typer.echo(f"Project does not exist.")
+
     
