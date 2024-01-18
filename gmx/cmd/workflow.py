@@ -25,4 +25,5 @@ def run_workflow(
     if current_proj is None:
         typer.echo("Please set a project to run a workflow.")
         return
-    WorkFlowLogic.run_workflows(current_proj, workflows)
+    wf = WorkFlowLogic()
+    wf.run_workflows(current_proj, workflows)

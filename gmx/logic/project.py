@@ -1,4 +1,5 @@
 import os
+import shutil
 import gmx.extensions as ex
 from gmx.logic.common import CommonLogic
 from jinja2 import Environment, FileSystemLoader
@@ -18,8 +19,13 @@ entities:
 
     def _add_sample_flow(self, flow_path: str):
         sample_flow_content = """- data: "sample.yml"
+  action: "generate"
   template: "sample_template.j2"
   output: "sample>SampleOutput.txt"
+
+- action: "write_to_file"
+  template: "sample_text.j2"
+  output: "sample>SampleTextFile.txt"
         """
         with open(os.path.join(flow_path, "sample.yml"), "w") as f:
             f.write(sample_flow_content)
@@ -36,6 +42,10 @@ public class {{data.entity_name}}
 }"""
         with open(os.path.join(template_path, "sample_template.j2"), "w") as f:
             f.write(sample_template_content)
+
+        sample_text_template_content = """Hello World!"""
+        with open(os.path.join(template_path, "sample_text.j2"), "w") as f:
+            f.write(sample_text_template_content)
 
     def add_project(self, project_name: str):
         project_path = os.path.join("gmx", project_name)
@@ -75,3 +85,9 @@ public class {{data.entity_name}}
         else:
             exists = False
         return exists
+    
+    def delete(self, project_name: str):
+        """Delete a folder and all its contents."""
+        project_path = os.path.join("gmx", project_name)
+        project_path = CommonLogic.get_gmx_folder_path(project_path)
+        shutil.rmtree(project_path)

@@ -1,71 +1,14 @@
 import os
-import sys
 import yaml
-import gmx.extensions as ex
 from gmx.logic.common import CommonLogic
-from jinja2 import Environment, FileSystemLoader
+from gmx.logic.generation import GenerationLogic
+from gmx.logic.fileops import FileOpsLogic
 
 class WorkFlowLogic:
     def __init__(self) -> None:
         pass
 
-    @staticmethod
-    def process_items(project_path, items):
-        env = Environment(loader=FileSystemLoader(os.path.join(project_path, 'templates')))
-        env.globals['lcase'] = ex.lcase
-        env.globals['joinify'] = ex.joinify
-        env.globals['pluralize'] = ex.pluralize
-        env.globals['camel'] = ex.camel
-        env.globals['kebab'] = ex.kebab
-        env.globals['pascale'] = ex.pascale
-        env.globals['dot'] = ex.dot
-        env.globals['title'] = ex.title
-        env.globals['snake'] = ex.snake
-        env.globals['path'] = ex.path
-        env.globals['uuid'] = ex.uuid
-        env.globals['secret'] = ex.secret
-        env.globals['secret_complex'] = ex.secret_complex
-        # Loop through the items and generate the output files
-        for item in items:
-            # Load the source data
-            try:
-                data_path = os.path.join(project_path, 'data', item['data'])
-                with open(
-                    data_path
-                    ) as f:
-                    data = yaml.load(f, Loader=yaml.FullLoader)                
-            except:
-                print(f'Error reading {data_path}.')
-
-            # Load the template
-            template = env.get_template(item['template'])
-
-            # Render the template with the source data
-            output = template.render(data=data)
-
-            try:
-                # Check if the folder path exists, if not, create it
-                current_working_directory = os.getcwd()
-                raw_path = item['output'].replace(">",os.sep)
-                folder_path = os.path.dirname(raw_path)
-                folder_path = os.path.join(
-                    current_working_directory,
-                    folder_path
-                )
-                if not os.path.exists(folder_path):
-                    os.makedirs(folder_path)
-
-                # Check if the file exists, if not, create it
-                if not os.path.isfile(raw_path):
-                    with open(raw_path, 'w') as file:
-                        file.write(output)
-            except Exception as e:
-                print(e)
-                filepath = item['output']
-                print(f'Error writing output {filepath}')
-
-    @staticmethod
-    def run_workflows(project_name: str, flows: list):
+    def run_workflows(self, project_name: str, flows: list):
         project_path = os.path.join("gmx", project_name)
         project_path = CommonLogic.get_gmx_folder_path(project_path)
         for flow in flows:
@@ -77,10 +20,35 @@ class WorkFlowLogic:
                         flow_path
                     ) as f:
                     items = yaml.safe_load(f)
-                    WorkFlowLogic.process_items(project_path, items)
+                    self._process_items(project_path, items)
+
                 print(f'Flow Status: Done.\n')
             except Exception as e: 
                 print(f'Flow processing failed.')
                 print(f'Check Flow YAMl and filename(s).')
                 continue
+
+    def _process_items(self, project_path, items):
+
+        # Loop through the items and generate the output files
+        for item in items:
+            item['project_path'] = project_path
+            self._switch_action(
+                item["action"],
+                item
+            )
+
+    def _switch_action(self, argument, param):
+        switcher = {
+            "generate": GenerationLogic.generate,
+            "write_to_file": FileOpsLogic.write_to_file,
+        }
+        # Get the function from switcher dictionary
+        func = switcher.get(argument, self._default_action)
+        # Execute the function and return its result
+        return func(param)
+    
+    def _default_action(self, item):
+        print("Unrecognized action.")
+
 
