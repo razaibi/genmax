@@ -26,8 +26,12 @@ class WorkFlowLogic:
                     flow_data = yaml.load(data_file, Loader=yaml.FullLoader)
                 with open(flow_path, 'r') as file:
                     workflow_string = file.read()
-                workflow_template = Template(workflow_string)
-                rendered_workflow = workflow_template.render(**flow_data)
+                rendered_workflow = GenerationLogic.generate_workflow(
+                    workflow_string,
+                    flow_data
+                )
+                # workflow_template = Template(workflow_string)
+                # rendered_workflow = workflow_template.render(**flow_data)
                 items = yaml.safe_load(rendered_workflow)
             else:
                 with open(flow_path, 'r') as file:
