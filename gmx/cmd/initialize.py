@@ -20,5 +20,9 @@ def init():
     pl.set_preference('current_project', project_name)
     typer.echo("")
     typer.echo("Run the sample project using the below command:")
-    typer.echo(f"gmx wf run sample")
+    typer.echo(f"gmx wf run {project_name}")
+    typer.echo("")
+    typer.echo(f"Alternatively, you can pass data to your workflow.")
+    typer.echo(f"gmx wf run {project_name} --data=sample")
+
     

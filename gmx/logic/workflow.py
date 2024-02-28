@@ -4,30 +4,40 @@ from gmx.logic.common import CommonLogic
 from gmx.logic.generation import GenerationLogic
 from gmx.logic.fileops import FileOpsLogic
 from gmx.logic.runner import RunnerLogic
+from jinja2 import Template
+
 
 class WorkFlowLogic:
     def __init__(self) -> None:
         pass
 
-    def run_workflows(self, project_name: str, flows: list):
-        project_path = os.path.join("gmx", project_name)
-        project_path = CommonLogic.get_gmx_folder_path(project_path)
+    def run_workflows(self, project_name: str, flows: list, flow_data_file: str = None):
+        project_path = CommonLogic.get_gmx_folder_path(os.path.join("gmx", project_name))
         for flow in flows:
-            flow_path = os.path.join(project_path, 'flows', f'{flow}.yml')
-            print(f'Processing Flow : {flow_path}.')
-            # Load the items from the YAMl file
-            try:
-                with open(
-                        flow_path
-                    ) as f:
-                    items = yaml.safe_load(f)
-                    self._process_items(project_path, items)
+            self._process_flow(flow, project_path, flow_data_file)
 
-                print(f'Flow Status: Done.\n')
-            except Exception as e: 
-                print(f'Flow processing failed.')
-                print(f'Check Flow YAMl and filename(s).')
-                continue
+    def _process_flow(self, flow: str, project_path: str, flow_data_file: str = None):
+        flow_path = os.path.join(project_path, 'flows', f'{flow}.yml')
+        print(f'Processing Flow: {flow_path}.')
+        try:
+            if flow_data_file:
+                flow_data_path = os.path.join(project_path, 'data', f'{flow_data_file}.yml')
+                with open(flow_data_path) as data_file:
+                    flow_data = yaml.load(data_file, Loader=yaml.FullLoader)
+                with open(flow_path, 'r') as file:
+                    workflow_string = file.read()
+                workflow_template = Template(workflow_string)
+                rendered_workflow = workflow_template.render(**flow_data)
+                items = yaml.safe_load(rendered_workflow)
+            else:
+                with open(flow_path, 'r') as file:
+                    items = yaml.safe_load(file)
+
+            self._process_items(project_path, items)
+            print('Flow Status: Done.\n')
+        except Exception as e:
+            print(f'Flow processing failed: {e}')
+            print('Check Flow YAML and filename(s).')
 
     def _process_items(self, project_path, items):
 
