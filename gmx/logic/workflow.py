@@ -3,6 +3,7 @@ import yaml
 from gmx.logic.common import CommonLogic
 from gmx.logic.generation import GenerationLogic
 from gmx.logic.fileops import FileOpsLogic
+from gmx.logic.runner import RunnerLogic
 
 class WorkFlowLogic:
     def __init__(self) -> None:
@@ -42,6 +43,7 @@ class WorkFlowLogic:
         switcher = {
             "generate": GenerationLogic.generate,
             "write_to_file": FileOpsLogic.write_to_file,
+            "run_command": RunnerLogic.run_command
         }
         # Get the function from switcher dictionary
         func = switcher.get(argument, self._default_action)

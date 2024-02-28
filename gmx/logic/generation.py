@@ -15,6 +15,8 @@ class GenerationLogic:
             )
         )
         env.globals['lcase'] = ex.lcase
+        env.globals['lower'] = ex.lower
+        env.globals['upper'] = ex.upper
         env.globals['joinify'] = ex.joinify
         env.globals['pluralize'] = ex.pluralize
         env.globals['camel'] = ex.camel

@@ -5,6 +5,8 @@ import secrets
 pz = Pluralizer()
 
 def lcase(x): return x[0].lower() + x[1:]
+def lower(x): return x.lower()
+def upper(x): return x.upper()
 def joinify(column_name, item_list): return ','.join(i[column_name] for i in item_list)
 def pluralize(x): return pz.pluralize(x)
 def camel(x): return caseswitcher.to_camel(x)
