@@ -38,7 +38,9 @@ The following methods are supported in the template:
 
 | Description | Method |
 |:---|:---|
-|Lower case| lcase(your_string)|
+|Lower case first char| lcase(your_string)|
+|Lower case| lowercase(your_string)|
+|Upper case| uppercase(your_string)|
 |Pluralize| pluralize(your_string)|
 |Join With Commas| joinify(name_of_element, element_list)|
 |Switch to Camel case| camel(your_string)|

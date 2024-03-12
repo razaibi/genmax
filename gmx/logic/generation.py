@@ -34,7 +34,7 @@ class GenerationLogic:
         workflow_template.environment = GenerationLogic.apply_extensions(
             workflow_template.environment
         )
-        rendered_workflow = workflow_template.render(**flow_data)
+        rendered_workflow = workflow_template.render(data=flow_data)
         return rendered_workflow
 
     @staticmethod
