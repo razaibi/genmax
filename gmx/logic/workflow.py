@@ -17,7 +17,7 @@ class WorkFlowLogic:
             self._process_flow(flow, project_path, flow_data_file)
 
     def _process_flow(self, flow: str, project_path: str, flow_data_file: str = None):
-        flow_path = os.path.join(project_path, 'flows', f'{flow}.yml')
+        flow_path = os.path.join(project_path, 'flows', f'{flow}.yaml.j2')
         print(f'Processing Flow: {flow_path}.')
         try:
             if flow_data_file:

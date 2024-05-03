@@ -26,8 +26,13 @@ entities:
 - action: "write_to_file"
   template: "sample_text.j2"
   output: "sample>SampleTextFile.txt"
+
+{% for i in range(1, 6) %}
+- action: "run_command"
+  command: 'echo "Hello {{ i }}"'    
+{% endfor %}
         """
-        with open(os.path.join(flow_path, "sample.yml"), "w") as f:
+        with open(os.path.join(flow_path, "sample.yaml.j2"), "w") as f:
             f.write(sample_flow_content)
 
     def _add_sample_template(self, template_path: str):

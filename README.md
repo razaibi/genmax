@@ -10,7 +10,7 @@ Genmax organizes all files and content in projects. Every project has itown fold
 
 - Flows
 
-Genmax projects have flows to group together multiple files to be generated. Flows are in **yml** format.
+Genmax projects have flows to group together multiple files to be generated. Flows are in **yaml.j2** format.
 
 - Data
 
