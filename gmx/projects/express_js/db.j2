@@ -1,0 +1,11 @@
+// db.js
+const sqlite3 = require('sqlite3').verbose();
+const db = new sqlite3.Database(':memory:');
+
+db.serialize(() => {
+    // You can initialize shared tables here if needed
+    // For example:
+    // db.run("CREATE TABLE IF NOT EXISTS shared_table (id INTEGER PRIMARY KEY, data TEXT)");
+});
+
+module.exports = db;
